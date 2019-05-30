@@ -78,6 +78,9 @@ endif
 "Always show current position
 set ruler
 
+"Show line numbers
+set number
+
 " Height of the command bar
 set cmdheight=2
 
@@ -139,7 +142,7 @@ if $COLORTERM == 'gnome-terminal'
 endif
 
 try
-    colorscheme desert
+    colorscheme torte
 catch
 endtry
 
@@ -338,6 +341,13 @@ function! HasPaste()
     endif
     return ''
 endfunction
+
+if &term =~ '256color'
+    " Disable Background Color Erase (BCE) so that color schemes
+    " work properly when Vim is used inside tmux and GNU screen.
+    set t_ut=
+endif
+
 
 " Don't close window, when deleting a buffer
 command! Bclose call <SID>BufcloseCloseIt()
