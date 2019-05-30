@@ -177,3 +177,8 @@ let g:ale_lint_on_enter = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gitgutter_enabled=0
 nnoremap <silent> <leader>d :GitGutterToggle<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Confortable motion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:loaded_comfortable_motion = 0
