@@ -45,13 +45,17 @@ nmap <c-n> <Plug>yankstack_substitute_newer_paste
 """"""""""""""""""""""""""""""
 let g:ctrlp_working_path_mode = 0
 
+let g:ctrlp_regexp = 1
 let g:ctrlp_map = '<c-f>'
 map <leader>j :CtrlP<cr>
 map <c-b> :CtrlPBuffer<cr>
 
 let g:ctrlp_max_height = 20
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
 
+let g:ctrlp_custom_ignore = {
+\ 'dir': '\(^\(.*gpii.node_modules\)\@!\&\(.*node_modules.*\)$\|target\|dist\)\|\(\.\(swp\|ico\|git\|svn\)\)$',
+\ 'file': '\.so$|\.dat$|\.DS_Store$'
+\ }
 
 """"""""""""""""""""""""""""""
 " => ZenCoding
@@ -182,3 +186,10 @@ nnoremap <silent> <leader>d :GitGutterToggle<cr>
 " => Confortable motion
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:loaded_comfortable_motion = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Latex Changes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:polyglot_disabled=['latex']
+let g:vimtex_view_general_viewer="Chrome.exe"
+let maplocalleader="'"
