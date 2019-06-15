@@ -30,6 +30,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable all bells
+set belloff=all
+
 " Sets how many lines of history VIM has to remember
 set history=500
 
