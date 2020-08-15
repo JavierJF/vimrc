@@ -174,3 +174,28 @@ let g:ale_lint_on_enter = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gitgutter_enabled=1
 nnoremap <silent> <leader>d :GitGutterToggle<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Confortable motion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:loaded_comfortable_motion = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Latex Changes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:polyglot_disabled=['latex']
+let g:vimtex_view_general_viewer="Chrome.exe"
+let maplocalleader="'"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Python Changes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:pymode_rope_completion = 1
+let g:pymode_rope_completion_bind = '<C-Space>'
+let g:pymode_rope = 1
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General config for completion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set completeopt=menuone,noinsert
