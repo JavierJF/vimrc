@@ -34,3 +34,23 @@
 	path = sources_non_forked/vim-fugitive-blame-ext
 	url = https://github.com/tommcdo/vim-fugitive-blame-ext
 	branch = master
+[submodule "sources_non_forked/vim-lsp"]
+	path = sources_non_forked/vim-lsp
+	url = https://github.com/prabirshrestha/vim-lsp
+	branch = master
+[submodule "sources_non_forked/vim-lsp-python"]
+	path = sources_non_forked/vim-lsp-python
+	url = https://github.com/ryanolsonx/vim-lsp-python
+	branch = master
+[submodule "sources_non_forked/vim-lsp-settings"]
+	path = sources_non_forked/vim-lsp-settings
+	url = https://github.com/mattn/vim-lsp-settings
+	branch = master
+[submodule "sources_non_forked/vim-packadd"]
+	path = sources_non_forked/vim-packadd
+	url = https://github.com/antoinedray/vim-packadd
+	branch = master
+[submodule "sources_non_forked/vimspector"]
+	path = sources_non_forked/vimspector
+	url = https://github.com/puremourning/vimspector
+	branch = master
