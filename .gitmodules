@@ -1,0 +1,36 @@
+[submodule "sources_non_forked/asyncomplete-lsp.vim"]
+	path = sources_non_forked/asyncomplete-lsp.vim
+	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim
+	branch = master
+[submodule "sources_non_forked/asyncomplete.vim"]
+	path = sources_non_forked/asyncomplete.vim
+	url = https://github.com/JavierJF/asyncomplete.vim
+	branch = personal
+[submodule "sources_non_forked/awesome-vim-colorschemes"]
+	path = sources_non_forked/awesome-vim-colorschemes
+	url = https://github.com/JavierJF/awesome-vim-colorschemes
+	branch = personal
+[submodule "sources_non_forked/deoplete.nvim"]
+	path = sources_non_forked/deoplete.nvim
+	url = https://github.com/Shougo/deoplete.nvim
+	branch = master
+[submodule "sources_non_forked/echodoc.vim"]
+	path = sources_non_forked/echodoc.vim
+	url = https://github.com/Shougo/echodoc.vim
+	branch = master
+[submodule "sources_non_forked/fastfold"]
+	path = sources_non_forked/fastfold
+	url = https://github.com/Konfekt/FastFold
+	branch = master
+[submodule "sources_non_forked/nvim-yarp"]
+	path = sources_non_forked/nvim-yarp
+	url = https://github.com/roxma/nvim-yarp
+	branch = master
+[submodule "sources_non_forked/vim-cpp-modern"]
+	path = sources_non_forked/vim-cpp-modern
+	url = https://github.com/bfrg/vim-cpp-modern
+	branch = master
+[submodule "sources_non_forked/vim-fugitive-blame-ext"]
+	path = sources_non_forked/vim-fugitive-blame-ext
+	url = https://github.com/tommcdo/vim-fugitive-blame-ext
+	branch = master
