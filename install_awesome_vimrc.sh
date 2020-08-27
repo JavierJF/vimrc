@@ -15,4 +15,6 @@ source ~/.vim_runtime/my_configs.vim
 catch
 endtry' > ~/.vimrc
 
+pip3 install --user pynvim
+
 echo "Installed the Ultimate Vim configuration successfully! Enjoy :-)"
