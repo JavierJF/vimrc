@@ -57,7 +57,8 @@ map <leader>b :CtrlPBuffer<cr>
 map <leader>f :CtrlPMRU<CR>
 
 let g:ctrlp_max_height = 20
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
+let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee|^\.clangd\|deps'
+let g:ctrlp_lazy_update = 350
 
 
 """"""""""""""""""""""""""""""
@@ -111,7 +112,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => surround.vim config
-" Annotate strings with gettext 
+" Annotate strings with gettext
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 vmap Si S(i_<esc>f)
 au FileType mako vmap Si S"i${ _(<esc>2f"a) }<esc>
@@ -153,20 +154,20 @@ nnoremap <silent> <leader>z :Goyo<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Ale (syntax checker and linter)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_linters = {
-\   'javascript': ['jshint'],
-\   'python': ['flake8'],
-\   'go': ['go', 'golint', 'errcheck']
-\}
-
-nmap <silent> <leader>a <Plug>(ale_next_wrap)
-
-" Disabling highlighting
-let g:ale_set_highlights = 0
-
-" Only run linting when saving the file
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
+"  let g:ale_linters = {
+"  \   'javascript': ['jshint'],
+"  \   'python': ['flake8'],
+"  \   'go': ['go', 'golint', 'errcheck']
+"  \}
+"
+"  nmap <silent> <leader>a <Plug>(ale_next_wrap)
+"
+"  " Disabling highlighting
+"  let g:ale_set_highlights = 0
+"
+"  " Only run linting when saving the file
+"  let g:ale_lint_on_text_changed = 'never'
+"  let g:ale_lint_on_enter = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -198,26 +199,180 @@ let g:pymode_rope = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General config for completion
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set completeopt=menuone,noinsert
+"set completeopt=menuone,noinsert
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Deoplete
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"call deoplete#custom#source('_', 'matchers', ['matcher_full_fuzzy'])
+"call deoplete#custom#option({
+"			\'ignore_case': v:true,
+"			\'complete_method':"omnifunc"
+"			\})
+
+"let g:deoplete#enable_at_startup = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LanguageClientVim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set hidden
+"set hidden
 
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-    \ 'python': ['/usr/local/bin/pyls'],
-    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-    \ 'cpp': ['/usr/bin/clangd', '-compile-commands-dir=build', '-background-index', '--clang-tidy' ],
+"  set completefunc=LanguageClient#complete
+"  let g:LanguageClient_serverCommands = {
+"      \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+"      \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+"      \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+"      \ 'python': ['/usr/local/bin/pyls'],
+"      \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+"      \ 'cpp': ['/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd', '-compile-commands-dir=build', '-background-index', '--clang-tidy', '--fallback-style=none' ],
+"  \ }
+"
+"  let g:LanguageClient_rootMarkers = {
+"  \ 'cpp': ['compile_commands.json', 'build'],
+"  \ }
+
+"  " note that if you are using Plug mapping you should not use `noremap` mappings.
+"  nmap <F5> <Plug>(lcn-menu)
+"  " Or map each action separately
+"  nmap <silent>K <Plug>(lcn-hover)
+"  nmap <silent> gd <Plug>(lcn-definition)
+"  nmap <silent> <F2> <Plug>(lcn-rename)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => LSP
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:lsp_virtual_text_enabled = 0
+let g:lsp_textprop_enabled = 0
+let g:lsp_documentation_float = 0
+
+let g:lsp_settings = {
+    \ 'clangd': {
+    \     'cmd': [
+    \         '/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd',
+    \         '-header-insertion=never',
+    \         '-background-index',
+    \         '--fallback-style=none'
+    \     ],
+    \ },
 \ }
 
-" note that if you are using Plug mapping you should not use `noremap` mappings.
-nmap <F5> <Plug>(lcn-menu)
-" Or map each action separately
-nmap <silent>K <Plug>(lcn-hover)
-nmap <silent> gd <Plug>(lcn-definition)
-nmap <silent> <F2> <Plug>(lcn-rename)
+function! s:DisableDiagnostics()
+    let g:lsp_diagnostics_were_enabled = get(g:, 'lsp_diagnostics_enabled', 0)
+    let g:lsp_diagnostics_enabled = 0
+endfunction
+
+function! s:RestoreDiagnostics()
+    let g:lsp_diagnostics_enabled = get(g:, 'lsp_diagnostics_were_enabled', 0)
+endfunction
+
+augroup lsp_lazy_diagnostics
+    autocmd!
+    autocmd InsertEnter * call s:DisableDiagnostics()
+    autocmd InsertLeave * call s:RestoreDiagnostics()
+augroup end
+
+set omnifunc=syntaxcomplete#Complete
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GitGutter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" default updatetime 4000ms is not good for async update
+set updatetime=300
+
+highlight GitGutterDelete guifg=#ff2222
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VimInspector
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:vimspector_enable_mappings = 'HUMAN'
+
+" Asyncomplete config
+let g:asyncomplete_smart_completion = 1
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_remove_duplicates = 1
+let g:asyncomplete_popup_delay = 200
+
+inoremap <expr> <C-j> pumvisible() ? "\<Down>" : "n"
+inoremap <expr> <C-k> pumvisible() ? "\<Up>" : "p"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => YouCompleteMe
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"  let g:ycm_language_server =
+"    \ [
+"    \   {
+"    \     'name': 'yaml',
+"    \     'cmdline': [ '/path/to/yaml/server/yaml-language-server', '--stdio' ],
+"    \     'filetypes': [ 'yaml' ]
+"    \   },
+"    \   {
+"    \     'name': 'rust',
+"    \     'cmdline': [ 'ra_lsp_server' ],
+"    \     'filetypes': [ 'rust' ],
+"    \     'project_root_files': [ 'Cargo.toml' ]
+"    \   },
+"    \   {
+"    \     'name':'clangd',
+"    \     'cmdline': [
+"    \         '/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd',
+"    \         '-header-insertion=never',
+"    \         '-background-index',
+"    \         '--fallback-style=none'
+"    \     ],
+"    \     'filetypes': [ 'cpp' ]
+"    \   }
+"    \ ]
+"
+"  set omnifunc=syntaxcomplete#Complete
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GitGutter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" default updatetime 4000ms is not good for async update
+set updatetime=300
+
+highlight GitGutterDelete guifg=#ff2222
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VimInspector
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:vimspector_enable_mappings = 'HUMAN'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => COC
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" " TextEdit might fail if hidden is not set.
+" set hidden
+"
+" " Some servers have issues with backup files, see #649.
+" set nobackup
+" set nowritebackup
+"
+" " Give more space for displaying messages.
+" set cmdheight=2
+"
+" " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" " delays and poor user experience.
+" set updatetime=300
+"
+" " Don't pass messages to |ins-completion-menu|.
+" set shortmess+=c
+"
+" " Always show the signcolumn, otherwise it would shift the text each time
+" " diagnostics appear/become resolved.
+" if has("patch-8.1.1564")
+"   " Recently vim can merge signcolumn and number column into one
+"   set signcolumn=number
+" else
+"   set signcolumn=yes
+" endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vim-lsp-cxx-highlight
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" let g:lsp_cxx_hl_use_text_props = 1

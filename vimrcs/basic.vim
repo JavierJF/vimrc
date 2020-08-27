@@ -30,6 +30,16 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FIX: for SSH entering no NORMAL mode (REPLACE | INSERT) - https://stackoverflow.com/a/11940894
+if $TERM =~ 'xterm-256color'
+  if !has('nvim')
+    set noek
+  endif
+endif
+
+" Show line numbers
+set number
+
 " Disable all bells
 set belloff=all
 
@@ -194,8 +204,12 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
+" Tab and space visualization
 
-""""""""""""""""""""""""""""""
+set list
+set lcs=space:·,tab:▸·,trail:·
+
+"""""""""""""""""""""""""""""""
 " => Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
