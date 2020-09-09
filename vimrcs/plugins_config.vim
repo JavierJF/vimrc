@@ -121,12 +121,16 @@ au FileType mako vmap Si S"i${ _(<esc>2f"a) }<esc>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lightline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
-      \             ['fugitive', 'readonly', 'filename', 'modified'] ],
+      \             ['fugitive', 'readonly', 'filename', 'modified', 'method'] ],
       \   'right': [ [ 'lineinfo' ], ['percent'] ]
+      \ },
+      \ 'component_function': {
+      \   'method': 'NearestMethodOrFunction'
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
@@ -139,7 +143,7 @@ let g:lightline = {
       \   'fugitive': '(exists("*FugitiveHead") && ""!=FugitiveHead())'
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
-      \ 'subseparator': { 'left': ' ', 'right': ' ' }
+      \ 'subseparator': { 'left': ' ', 'right': ' ' },
       \ }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -174,7 +178,11 @@ nnoremap <silent> <leader>z :Goyo<cr>
 " => Git gutter (Git diff)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gitgutter_enabled=1
+let g:gitgutter_sign_allow_clobber=0
 nnoremap <silent> <leader>d :GitGutterToggle<cr>
+
+nnoremap <leader>N :GitGutterNextHunk<cr>
+nnoremap <leader>P :GitGutterPrevHunk<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Confortable motion
@@ -246,6 +254,8 @@ let g:pymode_rope = 1
 let g:lsp_virtual_text_enabled = 0
 let g:lsp_textprop_enabled = 0
 let g:lsp_documentation_float = 0
+"let g:lsp_preview_float = 0
+let g:lsp_hover_conceal = 0
 
 let g:lsp_settings = {
     \ 'clangd': {
@@ -256,6 +266,13 @@ let g:lsp_settings = {
     \         '--fallback-style=none'
     \     ],
     \ },
+    \ 'hie': {
+    \     'cmd': [
+    \         'hie',
+    \         '--lsp',
+    \     ],
+    \     'whitelist': [ 'haskell' ]
+    \  }
 \ }
 
 function! s:DisableDiagnostics()
@@ -270,7 +287,9 @@ endfunction
 augroup lsp_lazy_diagnostics
     autocmd!
     autocmd InsertEnter * call s:DisableDiagnostics()
+    autocmd InsertEnter * call lsp#activate()
     autocmd InsertLeave * call s:RestoreDiagnostics()
+    autocmd InsertEnter * call lsp#activate()
 augroup end
 
 set omnifunc=syntaxcomplete#Complete
@@ -376,3 +395,59 @@ let g:vimspector_enable_mappings = 'HUMAN'
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " let g:lsp_cxx_hl_use_text_props = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vista.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" How each level is indented and what to prepend.
+" This could make the display more compact or more spacious.
+" e.g., more compact: ["▸ ", ""]
+" Note: this option only works the LSP executives, doesn't work for `:Vista ctags`.
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+
+" Executive used when opening vista sidebar without specifying it.
+" See all the avaliable executives via `:echo g:vista#executives`.
+" let g:vista_default_executive = 'vim_lsp'
+
+" Set the executive for some filetypes explicitly. Use the explicit executive
+" instead of the default one for these filetypes when using `:Vista` without
+" specifying the executive.
+let g:vista_executive_for = {
+  \ 'cpp': 'vim_lsp',
+  \ 'php': 'vim_lsp',
+  \ 'haskell': 'vim_lsp',
+  \ }
+
+"                    NO CTAGS FOR NOW
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" Declare the command including the executable and options used to generate ctags output
+" for some certain filetypes.The file path will be appened to your custom command.
+" For example:
+" let g:vista_ctags_cmd = {
+"       \ 'haskell': 'hasktags -x -o - -c',
+"       \ }
+"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" To enable fzf's preview window set g:vista_fzf_preview.
+" The elements of g:vista_fzf_preview will be passed as arguments to fzf#vim#with_preview()
+" For example:
+let g:vista_fzf_preview = ['right:50%']
+let g:vista_sidebar_width = 60
+
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
+set statusline+=%{NearestMethodOrFunction()}
+
+" By default vista.vim never run if you don't call it explicitly.
+"
+" If you want to show the nearest function in your statusline automatically,
+" you can add the following line to your vimrc
+autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
+
+nnoremap <leader>v :Vista!!<cr>
+
