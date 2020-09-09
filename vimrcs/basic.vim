@@ -125,6 +125,10 @@ set showmatch
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
+" Avoid waiting too match for matching syntax
+let g:matchparen_timeout = 10
+let g:matchparen_insert_timeout = 10
+
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
