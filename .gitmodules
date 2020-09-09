@@ -59,7 +59,7 @@
 	url = git@github.com:airblade/vim-gitgutter.git
 [submodule "sources_non_forked/vim-javascript-syntax"]
 	path = sources_non_forked/vim-javascript-syntax
-	url = git@github.com:jelera/vim-javascript-syntax.git
+	url = https://github.com/jelera/vim-javascript-syntax.git
 [submodule "sources_non_forked/vista.vim"]
 	path = sources_non_forked/vista.vim
-	url = git@github.com:liuchengxu/vista.vim.git
+	url = https://github.com/liuchengxu/vista.vim.git
