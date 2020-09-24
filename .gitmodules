@@ -63,3 +63,6 @@
 [submodule "sources_non_forked/vista.vim"]
 	path = sources_non_forked/vista.vim
 	url = https://github.com/liuchengxu/vista.vim.git
+[submodule "sources_forked/ack.vim"]
+	path = sources_forked/ack.vim
+	url = https://github.com/JavierJF/ack.vim
