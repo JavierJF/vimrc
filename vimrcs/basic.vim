@@ -114,6 +114,9 @@ set hlsearch
 " Makes search act like search in modern browsers
 set incsearch 
 
+" Show the number of element in search
+set shortmess-=S
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw 
 
@@ -212,6 +215,7 @@ set wrap "Wrap lines
 
 set list
 set lcs=space:·,tab:▸·,trail:·
+map <leader>s :set list! <cr>
 
 """""""""""""""""""""""""""""""
 " => Visual mode related
@@ -277,6 +281,9 @@ endtry
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+
+"Fix movement keys in remote
+set nocp
 
 """"""""""""""""""""""""""""""
 " => Status line
