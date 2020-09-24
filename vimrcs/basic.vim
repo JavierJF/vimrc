@@ -114,9 +114,6 @@ set hlsearch
 " Makes search act like search in modern browsers
 set incsearch 
 
-" Show the number of element in search
-set shortmess-=S
-
 " Don't redraw while executing macros (good performance config)
 set lazyredraw 
 
@@ -125,6 +122,7 @@ set magic
 
 " Show matching brackets when text indicator is over them
 set showmatch 
+
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
@@ -281,9 +279,12 @@ endtry
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-
 "Fix movement keys in remote
 set nocp
+
+" Show the number of element in search
+" NOTE: For unknown reasons this needs to be set after nocp
+set shortmess-=S
 
 """"""""""""""""""""""""""""""
 " => Status line
