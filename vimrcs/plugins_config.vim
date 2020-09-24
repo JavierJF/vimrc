@@ -12,8 +12,14 @@ let s:vim_runtime = expand('<sfile>:p:h')."/.."
 call pathogen#infect(s:vim_runtime.'/sources_forked/{}')
 call pathogen#infect(s:vim_runtime.'/sources_non_forked/{}')
 call pathogen#infect(s:vim_runtime.'/my_plugins/{}')
-call pathogen#helptags()
 
+if has('nvim')
+    call pathogen#infect(s:vim_runtime.'/neovim_only_plugins/{}')
+else
+    call pathogen#infect(s:vim_runtime.'/vim_only_plugins/{}')
+endif
+
+call pathogen#helptags()
 
 """"""""""""""""""""""""""""""
 " => bufExplorer plugin
@@ -47,7 +53,7 @@ nmap <C-n> <Plug>yankstack_substitute_newer_paste
 let g:ctrlp_working_path_mode = 0
 
 " Quickly find and open a file in the current working directory
-let g:ctrlp_map = '<C-f>'
+" let g:ctrlp_map = '<C-f>'
 map <leader>j :CtrlP<cr>
 
 " Quickly find and open a buffer
@@ -58,7 +64,7 @@ map <leader>f :CtrlPMRU<CR>
 
 let g:ctrlp_max_height = 20
 let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee|^\.clangd\|deps'
-let g:ctrlp_lazy_update = 350
+let g:ctrlp_lazy_update = 300
 
 
 """"""""""""""""""""""""""""""
@@ -210,18 +216,6 @@ let g:pymode_rope = 1
 "set completeopt=menuone,noinsert
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Deoplete
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"call deoplete#custom#source('_', 'matchers', ['matcher_full_fuzzy'])
-"call deoplete#custom#option({
-"			\'ignore_case': v:true,
-"			\'complete_method':"omnifunc"
-"			\})
-
-"let g:deoplete#enable_at_startup = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LanguageClientVim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "set hidden
@@ -251,16 +245,18 @@ let g:pymode_rope = 1
 " => LSP
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+if !has('nvim')
+
 let g:lsp_virtual_text_enabled = 0
 let g:lsp_textprop_enabled = 0
 let g:lsp_documentation_float = 0
-"let g:lsp_preview_float = 0
 let g:lsp_hover_conceal = 0
+"let g:lsp_preview_float = 0
 
 let g:lsp_settings = {
     \ 'clangd': {
     \     'cmd': [
-    \         '/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd',
+    \         '/home/jj/.local/share/vim-lsp-settings/servers/clangd/clangd',
     \         '-header-insertion=never',
     \         '-background-index',
     \         '--fallback-style=none'
@@ -272,7 +268,25 @@ let g:lsp_settings = {
     \         '--lsp',
     \     ],
     \     'whitelist': [ 'haskell' ]
-    \  }
+    \ },
+    \ 'pyls-all': {
+    \     'workspace_config': {
+    \         'pyls': {
+    \             'configurationSources': ['pycodestyle'],
+    \             'plugins': {
+    \                 'pydocstyle': {'enabled': v:true},
+    \                 'pycodestyle': {
+    \                     'enabled': v:true,
+    \                     'ignore': ["E226", "E302", "E41", "E501", "E305", "E251"],
+    \                     'max-line-length': 120,
+    \                 },
+    \                 'black': {'enable': v:true},
+    \                 'autopep8': {'enable': v:true},
+    \             }
+    \         }
+    \     },
+    \     'whitelist': [ 'python' ]
+    \ }
 \ }
 
 function! s:DisableDiagnostics()
@@ -293,6 +307,65 @@ augroup lsp_lazy_diagnostics
 augroup end
 
 set omnifunc=syntaxcomplete#Complete
+
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing message extra message when using completion
+set shortmess+=c
+
+else
+
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing message extra message when using completion
+set shortmess+=c
+
+let g:diagnostic_enable_virtual_text = 0
+let g:completion_enable_auto_hover = 0
+let g:completion_enable_auto_signature = 0
+
+lua <<EOF
+require'nvim_lsp'.gopls.setup{}
+require'nvim_lsp'.clangd.setup{on_attach=
+  function (options)
+    require'diagnostic'.on_attach(options)
+    require'completion'.on_attach(options)
+  end
+}
+EOF
+
+" LSP completion per file for NVIM
+"autocmd Filetype python  setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"autocmd Filetype cpp     setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"autocmd Filetype haskell setlocal omnifunc=v:lua.vim.lsp.omnifunc
+"autocmd Filetype c       setlocal omnifunc=v:lua.vim.lsp.omnifunc
+
+endif
+
+if has('nvim')
+    " nnoremap <A-h> :LspHover <cr>
+    " nnoremap <A-d> :LspDefinition <cr>
+    " nnoremap <A-i> :LspDeclaration <cr>
+    " nnoremap <A-r> :LspReferences <cr>
+
+    nnoremap è <cmd>lua vim.lsp.buf.hover()<CR>
+    nnoremap é <cmd>lua vim.lsp.buf.definition()<CR>
+    nnoremap ä <cmd>lua vim.lsp.buf.implementation()<CR>
+    nnoremap ò <cmd>lua vim.lsp.buf.references()<CR>
+
+    nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+    nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+    nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+    nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+    nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+else
+    nnoremap è :LspHover <cr>
+    nnoremap é :LspDefinition <cr>
+    nnoremap ä :LspDeclaration <cr>
+    nnoremap ò :LspReferences <cr>
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GitGutter
@@ -413,11 +486,28 @@ let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
 " Set the executive for some filetypes explicitly. Use the explicit executive
 " instead of the default one for these filetypes when using `:Vista` without
 " specifying the executive.
+
+if !has("nvim")
+
 let g:vista_executive_for = {
+  \ 'c': 'vim_lsp',
   \ 'cpp': 'vim_lsp',
+  \ 'python': 'vim_lsp',
   \ 'php': 'vim_lsp',
   \ 'haskell': 'vim_lsp',
   \ }
+
+else
+
+let g:vista_executive_for = {
+  \ 'c': 'nvim_lsp',
+  \ 'cpp': 'nvim_lsp',
+  \ 'python': 'nvim_lsp',
+  \ 'php': 'nvim_lsp',
+  \ 'haskell': 'nvim_lsp',
+  \ }
+
+endif
 
 "                    NO CTAGS FOR NOW
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
