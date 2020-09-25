@@ -1,7 +1,3 @@
-[submodule "sources_non_forked/asyncomplete-lsp.vim"]
-	path = sources_non_forked/asyncomplete-lsp.vim
-	url = https://github.com/prabirshrestha/asyncomplete-lsp.vim
-	branch = master
 [submodule "sources_non_forked/asyncomplete.vim"]
 	path = sources_non_forked/asyncomplete.vim
 	url = https://github.com/JavierJF/asyncomplete.vim
