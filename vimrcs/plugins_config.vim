@@ -306,10 +306,9 @@ augroup lsp_lazy_diagnostics
     autocmd InsertEnter * call lsp#activate()
 augroup end
 
-set omnifunc=syntaxcomplete#Complete
-
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect
+set completeopt-=preview
 
 " Avoid showing message extra message when using completion
 set shortmess+=c
@@ -318,6 +317,7 @@ else
 
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect
+set completeopt-=preview
 
 " Avoid showing message extra message when using completion
 set shortmess+=c
@@ -371,7 +371,7 @@ endif
 " => GitGutter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " default updatetime 4000ms is not good for async update
-set updatetime=300
+set updatetime=200
 
 highlight GitGutterDelete guifg=#ff2222
 
@@ -382,12 +382,24 @@ let g:vimspector_enable_mappings = 'HUMAN'
 
 " Asyncomplete config
 let g:asyncomplete_smart_completion = 1
-let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_auto_popup = 0
 let g:asyncomplete_remove_duplicates = 1
 let g:asyncomplete_popup_delay = 200
 
 inoremap <expr> <C-j> pumvisible() ? "\<Down>" : "n"
-inoremap <expr> <C-k> pumvisible() ? "\<Up>" : "p"
+inoremap <expr> <C-k> pumvisible() ? "\<Up>"   : "p"
+inoremap <expr> <cr>  pumvisible() ? "\<C-y>"  : "\<cr>"
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => YouCompleteMe
@@ -419,14 +431,6 @@ inoremap <expr> <C-k> pumvisible() ? "\<Up>" : "p"
 "    \ ]
 "
 "  set omnifunc=syntaxcomplete#Complete
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => GitGutter
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" default updatetime 4000ms is not good for async update
-set updatetime=300
-
-highlight GitGutterDelete guifg=#ff2222
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VimInspector
