@@ -251,6 +251,8 @@ let g:lsp_virtual_text_enabled = 0
 let g:lsp_textprop_enabled = 0
 let g:lsp_documentation_float = 0
 let g:lsp_hover_conceal = 0
+let g:lsp_preview_keep_focus = 0
+let g:lsp_preview_max_width = 100
 "let g:lsp_preview_float = 0
 
 let g:lsp_settings = {
@@ -264,7 +266,7 @@ let g:lsp_settings = {
     \ },
     \ 'hie': {
     \     'cmd': [
-    \         'hie',
+    \         '/home/jj/.vscode-server/data/User/globalStorage/haskell.haskell/haskell-language-server-0.5.0-linux-8.6.5',
     \         '--lsp',
     \     ],
     \     'whitelist': [ 'haskell' ]
@@ -400,6 +402,50 @@ inoremap <silent><expr> <TAB>
   \ <SID>check_back_space() ? "\<TAB>" :
   \ asyncomplete#force_refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:CustomiseUI()
+  let wins = g:vimspector_session_windows
+
+  " Make the left column at least 30 chars
+  call win_gotoid( wins.variables )
+  30wincmd |
+  call win_gotoid( wins.stack_trace )
+  30wincmd |
+  call win_gotoid( wins.watches )
+  30wincmd |
+
+  " Make the code window at least 100 chars
+  call win_gotoid( wins.code )
+  100wincmd |
+
+  " Make the output window 10 lines high and right at the botton of the screen
+  call win_gotoid( wins.output )
+  10wincmd _
+  wincmd J
+endfunction
+
+function s:SetUpTerminal()
+  let terminal_win = g:vimspector_session_windows.terminal
+
+  " Make the terminal window at most 80 columns wide, ensuring there is enough
+  " sapce for our code window (80 columns) and the left bar (70 columns)
+
+  " Padding is 2 for the 2 vertical split markers and 2 for the sign column in
+  " the code window.
+  let left_bar = 30
+  let code = 80
+  let padding = 4
+  let cols = max( [ min( [ &columns - left_bar - code - padding, 80 ] ), 10 ] )
+  call win_gotoid( terminal_win )
+  wincmd J
+  execute cols . 'wincmd |'
+endfunction
+
+augroup TestUICustomistaion
+  autocmd!
+  autocmd User VimspectorUICreated call s:CustomiseUI()
+  autocmd User VimspectorTerminalOpened call s:SetUpTerminal()
+augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => YouCompleteMe
