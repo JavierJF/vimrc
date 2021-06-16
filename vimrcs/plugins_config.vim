@@ -63,7 +63,12 @@ map <leader>b :CtrlPBuffer<cr>
 map <leader>f :CtrlPMRU<CR>
 
 let g:ctrlp_max_height = 20
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee|^\.clangd\|deps'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|coffee|svn|clangd)|(node_modules|deps|coverage_.*)$',
+  \ 'file': '\v\.(exe|so|dll|gcno|gcda|o|a)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
 let g:ctrlp_lazy_update = 300
 
 
@@ -94,7 +99,7 @@ set grepprg=/bin/grep\ -nH
 let g:NERDTreeWinPos = "right"
 let NERDTreeShowHidden=0
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
-let g:NERDTreeWinSize=35
+let g:NERDTreeWinSize=50
 map <leader>nn :NERDTreeToggle<cr>
 map <leader>nb :NERDTreeFromBookmark<Space>
 map <leader>nf :NERDTreeFind<cr>
@@ -258,15 +263,15 @@ let g:lsp_preview_max_width = 100
 let g:lsp_settings = {
     \ 'clangd': {
     \     'cmd': [
-    \         '/home/jj/.local/share/vim-lsp-settings/servers/clangd/clangd',
-    \         '-header-insertion=never',
-    \         '-background-index',
+    \         '/usr/bin/clangd',
+    \         '--header-insertion=never',
+    \         '--background-index',
     \         '--fallback-style=none'
     \     ],
     \ },
     \ 'hie': {
     \     'cmd': [
-    \         '/home/jj/.vscode-server/data/User/globalStorage/haskell.haskell/haskell-language-server-0.5.0-linux-8.6.5',
+    \         '/home/javjarfer/.local/share/vim-lsp-settings/servers/efm-langserver/efm-langserver',
     \         '--lsp',
     \     ],
     \     'whitelist': [ 'haskell' ]
@@ -276,10 +281,13 @@ let g:lsp_settings = {
     \         'pyls': {
     \             'configurationSources': ['pycodestyle'],
     \             'plugins': {
-    \                 'pydocstyle': {'enabled': v:true},
+    \                 'pydocstyle': {
+    \                     'enabled': v:true,
+    \                     'ignore': ["D102", "D107", "D203", "D202", "D401"],
+    \                 },
     \                 'pycodestyle': {
     \                     'enabled': v:true,
-    \                     'ignore': ["E226", "E302", "E41", "E501", "E305", "E251"],
+    \                     'ignore': ["E226", "E302", "E41", "E501", "E305", "E251", "E111", "E114"],
     \                     'max-line-length': 120,
     \                 },
     \                 'black': {'enable': v:true},
@@ -363,10 +371,19 @@ if has('nvim')
     nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
     nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
 else
-    nnoremap è :LspHover <cr>
-    nnoremap é :LspDefinition <cr>
-    nnoremap ä :LspDeclaration <cr>
-    nnoremap ò :LspReferences <cr>
+    " nnoremap <A-h> :LspHover <cr>
+    " nnoremap <A-d> :LspDefinition <cr>
+    " nnoremap <A-i> :LspDeclaration <cr>
+    " nnoremap <A-r> :LspReferences <cr>
+
+    execute "set <a-h>=\<esc>\h"
+    nnoremap <a-h> :LspHover <cr>
+    execute "set <a-i>=\<esc>\i"
+    nnoremap <a-i> :LspDefinition <cr>
+    execute "set <a-d>=\<esc>\d"
+    nnoremap <a-d> :LspDeclaration <cr>
+    execute "set <a-r>=\<esc>\r"
+    nnoremap <a-r> :LspReferences <cr>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -528,6 +545,7 @@ let g:vimspector_enable_mappings = 'HUMAN'
 " e.g., more compact: ["▸ ", ""]
 " Note: this option only works the LSP executives, doesn't work for `:Vista ctags`.
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+let g:vista#renderer#enable_icon = 1
 
 " Executive used when opening vista sidebar without specifying it.
 " See all the avaliable executives via `:echo g:vista#executives`.
