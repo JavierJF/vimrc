@@ -37,6 +37,20 @@ if $TERM =~ 'xterm-256color'
   endif
 endif
 
+xnoremap "+y y:call system("wl-copy", @")<cr>
+
+nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
+nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
+
+if &term =~ '256color'
+    " Disable Background Color Erase (BCE) so that color schemes
+    " work properly when Vim is used inside tmux and GNU screen.
+    set t_ut=
+endif
+
+" Remove scroll flickering
+set ttyscroll=1
+
 " Show line numbers
 set number
 
@@ -51,7 +65,7 @@ filetype plugin on
 filetype indent on
 
 " Set to auto read when a file is changed from the outside
-set autoread
+" set autoread
 au FocusGained,BufEnter * checktime
 
 " With a map leader it's possible to do extra key combinations
@@ -156,11 +170,6 @@ syntax enable
 if $COLORTERM == 'gnome-terminal'
     set t_Co=256
 endif
-
-try
-    colorscheme desert
-catch
-endtry
 
 set background=dark
 
@@ -293,10 +302,14 @@ set shortmess-=S
 set laststatus=2
 
 " Format the status line
-set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+" set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
+""""""""""""""""""""""""""""""
+" => Set title
+""""""""""""""""""""""""""""""
+set title
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remap VIM 0 to first non-blank character
