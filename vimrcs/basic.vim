@@ -220,8 +220,8 @@ set wrap "Wrap lines
 
 " Tab and space visualization
 
-set list
-set lcs=space:·,tab:▸·,trail:·
+"set list
+set lcs=space:·,tab:>\ ,trail:·
 map <leader>s :set list! <cr>
 
 """""""""""""""""""""""""""""""
