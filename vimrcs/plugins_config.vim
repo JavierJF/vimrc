@@ -64,7 +64,7 @@ map <leader>f :CtrlPMRU<CR>
 
 let g:ctrlp_max_height = 20
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|coffee|svn|clangd)|(node_modules|deps|coverage_.*)$',
+  \ 'dir':  '\v[\/]\.(git|hg|coffee|svn|clangd)|(node_modules|coverage_.*)$',
   \ 'file': '\v\.(exe|so|dll|gcno|gcda|o|a)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
