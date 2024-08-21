@@ -387,22 +387,6 @@ let g:diagnostic_enable_virtual_text = 0
 let g:completion_enable_auto_hover = 0
 let g:completion_enable_auto_signature = 0
 
-lua <<EOF
-require'nvim_lsp'.gopls.setup{}
-require'nvim_lsp'.clangd.setup{on_attach=
-  function (options)
-    require'diagnostic'.on_attach(options)
-    require'completion'.on_attach(options)
-  end
-}
-EOF
-
-" LSP completion per file for NVIM
-"autocmd Filetype python  setlocal omnifunc=v:lua.vim.lsp.omnifunc
-"autocmd Filetype cpp     setlocal omnifunc=v:lua.vim.lsp.omnifunc
-"autocmd Filetype haskell setlocal omnifunc=v:lua.vim.lsp.omnifunc
-"autocmd Filetype c       setlocal omnifunc=v:lua.vim.lsp.omnifunc
-
 endif
 
 if has('nvim')
