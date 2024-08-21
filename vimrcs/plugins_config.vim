@@ -206,9 +206,10 @@ command! -nargs=1 -complete=custom,s:lightline_colorschemes LightlineColorscheme
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vimroom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:goyo_width=100
+let g:goyo_width=130
 let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
+let g:goyo_linenr=1
 nnoremap <silent> <leader>z :Goyo<cr>
 
 
