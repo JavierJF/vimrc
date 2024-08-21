@@ -6872,11 +6872,15 @@ endfunction
 
 function! s:linechars(pattern) abort
   let chars = strlen(s:gsub(matchstr(getline('.'), a:pattern), '.', '.'))
-  if &conceallevel > 1
+  let match_line = matchstr(getline('.'), a:pattern)
+  let line_len_diff = strlen(match_line) - strchars(match_line)
+  let chars = strchars(s:gsub(match_line, '.', '.'))
+  if exists('*synconcealed') && &conceallevel > 1
     for col in range(1, chars)
       let chars -= synconcealed(line('.'), col)[0]
     endfor
   endif
+  let chars -= line_len_diff
   return chars
 endfunction
 
