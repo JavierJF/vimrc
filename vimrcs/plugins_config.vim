@@ -126,8 +126,11 @@ au FileType mako vmap Si S"i${ _(<esc>2f"a) }<esc>
 " => lightline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Previous Config:
+"   - colorscheme: 'Wombat'
+
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'Tomorrow',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['fugitive', 'readonly', 'filename', 'modified', 'method'] ],
@@ -137,6 +140,7 @@ let g:lightline = {
       \   'method': 'NearestMethodOrFunction'
       \ },
       \ 'component': {
+      \   'lineinfo': '%3l:%-2v',
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
       \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
       \   'fugitive': '%{exists("*FugitiveHead")?FugitiveHead():""}'
@@ -149,6 +153,55 @@ let g:lightline = {
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' },
       \ }
+
+augroup LightlineColorscheme
+  autocmd!
+  autocmd ColorScheme * call s:lightline_update()
+augroup END
+function! s:lightline_update()
+  if !exists('g:loaded_lightline')
+    return
+  endif
+  try
+    if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|seoul256\|Tomorrow'
+      let g:lightline.colorscheme =
+            \ substitute(substitute(g:colors_name, '-', '_', 'g'), '256.*', '', '')
+      call lightline#init()
+      call lightline#colorscheme()
+      call lightline#update()
+    endif
+  catch
+  endtry
+endfunction
+
+" TODO: Colorschemes should probably take care of this themselves
+function! s:CleanupColorscheme()
+    " Reset backgroup to dark mode
+    set background=dark
+    " Clear highlights
+    hi clear
+    " Reset syntax
+    if exists("syntax_on")
+      syntax reset
+    endif
+endfunction
+
+command! -nargs=0 CleanupColorscheme call s:CleanupColorscheme()
+
+function! s:set_lightline_colorscheme(name) abort
+  let g:lightline.colorscheme = a:name
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+endfunction
+function! s:lightline_colorschemes(...) abort
+  return join(map(
+        \ globpath(&rtp,"autoload/lightline/colorscheme/*.vim",1,1),
+        \ "fnamemodify(v:val,':t:r')"),
+        \ "\n")
+endfunction
+command! -nargs=1 -complete=custom,s:lightline_colorschemes LightlineColorscheme
+      \ call s:set_lightline_colorscheme(<q-args>)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vimroom
