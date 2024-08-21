@@ -243,11 +243,6 @@ nnoremap <leader>N :GitGutterNextHunk<cr>
 nnoremap <leader>P :GitGutterPrevHunk<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Confortable motion
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:loaded_comfortable_motion = 0
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Latex Changes
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:polyglot_disabled=['latex']
