@@ -37,7 +37,7 @@ if $TERM =~ 'xterm-256color'
   endif
 endif
 
-xnoremap "+y y:call system("wl-copy", @")<cr>
+xnoremap "+y y:call system("wl-copy --type text/plain", @")<cr>
 
 nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
 nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
