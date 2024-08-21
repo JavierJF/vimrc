@@ -448,7 +448,7 @@ highlight GitGutterDelete guifg=#ff2222
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VimInspector
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:vimspector_enable_mappings = 'HUMAN'
+let g:gimspector_enable_mappings = 'HUMAN'
 
 " Asyncomplete config
 let g:asyncomplete_smart_completion = 1
