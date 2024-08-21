@@ -263,49 +263,41 @@ let g:pymode_rope = 1
 "set completeopt=menuone,noinsert
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => LanguageClientVim
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"set hidden
-
-"  set completefunc=LanguageClient#complete
-"  let g:LanguageClient_serverCommands = {
-"      \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"      \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-"      \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-"      \ 'python': ['/usr/local/bin/pyls'],
-"      \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-"      \ 'cpp': ['/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd', '-compile-commands-dir=build', '-background-index', '--clang-tidy', '--fallback-style=none' ],
-"  \ }
-"
-"  let g:LanguageClient_rootMarkers = {
-"  \ 'cpp': ['compile_commands.json', 'build'],
-"  \ }
-
-"  " note that if you are using Plug mapping you should not use `noremap` mappings.
-"  nmap <F5> <Plug>(lcn-menu)
-"  " Or map each action separately
-"  nmap <silent>K <Plug>(lcn-hover)
-"  nmap <silent> gd <Plug>(lcn-definition)
-"  nmap <silent> <F2> <Plug>(lcn-rename)
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LSP
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if !has('nvim')
 
+" REVISIT: Disable Markdown for now. It has bad rendering #1289
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! s:lsp_get_supported_capabilities(...) abort
+  let fmt = ['plaintext']  " default is ['markdown', 'plaintext']
+  let opts = call('lsp#default_get_supported_capabilities', a:000)
+  let opts['textDocument']['hover']['contentFormat'] = fmt
+  let opts['textDocument']['completion']['completionItem']['documentationFormat'] = fmt
+  return opts
+endfunction
+
+let g:lsp_get_supported_capabilities = [function('s:lsp_get_supported_capabilities')]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Don't show actions by default -- too verbose
+let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_virtual_text_enabled = 0
 let g:lsp_textprop_enabled = 0
 let g:lsp_documentation_float = 0
 let g:lsp_hover_conceal = 0
 let g:lsp_preview_keep_focus = 0
 let g:lsp_preview_max_width = 100
+let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_use_native_client = 1
 "let g:lsp_preview_float = 0
 
 let g:lsp_settings = {
     \ 'clangd': {
     \     'cmd': [
     \         '/usr/bin/clangd',
+    \         '--clang-tidy',
     \         '--header-insertion=never',
     \         '--background-index',
     \         '--fallback-style=none'
@@ -325,7 +317,7 @@ let g:lsp_settings = {
     \             'plugins': {
     \                 'pydocstyle': {
     \                     'enabled': v:true,
-    \                     'ignore': ["D102", "D107", "D203", "D202", "D401"],
+    \                     'ignore': ["D102", "D107", "D203", "D202", "D212", "D401"],
     \                 },
     \                 'pycodestyle': {
     \                     'enabled': v:true,
@@ -340,6 +332,23 @@ let g:lsp_settings = {
     \     'whitelist': [ 'python' ]
     \ }
 \ }
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    nnoremap <buffer> <expr><c-j> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-k> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    " autocmd! BufWritePre *.rs,*.go,*.cpp call execute('LspDocumentFormatSync')
+
+    " refer to doc to add more commands
+endfunction
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 function! s:DisableDiagnostics()
     let g:lsp_diagnostics_were_enabled = get(g:, 'lsp_diagnostics_enabled', 0)
