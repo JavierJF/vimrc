@@ -381,7 +381,7 @@ set formatoptions+=t
 " => Set default line wrapping
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set textwidth=80
+set textwidth=110
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
