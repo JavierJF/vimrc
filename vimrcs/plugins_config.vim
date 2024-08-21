@@ -440,8 +440,9 @@ let g:asyncomplete_auto_popup = 0
 let g:asyncomplete_remove_duplicates = 1
 let g:asyncomplete_popup_delay = 200
 
-inoremap <expr> <C-j> pumvisible() ? "\<Down>" : "n"
-inoremap <expr> <C-k> pumvisible() ? "\<Up>"   : "p"
+" TODO: Check if no longer needed
+inoremap <expr> <C-j> pumvisible() ? "\<Down>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<Up>"   : "\<C-k>"
 inoremap <expr> <cr>  pumvisible() ? "\<C-y>"  : "\<cr>"
 
 function! s:check_back_space() abort
@@ -644,3 +645,28 @@ autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 
 nnoremap <leader>v :Vista!!<cr>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Autopairs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:AutoPairsNoJump = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => NERDTree
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" This is a temporary workaround. The issue here:
+" https://github.com/preservim/nerdtree/issues/1321
+let g:NERDTreeMinimalMenu=1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Codium
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:codeium_disable_bindings = 1
+" let g:codeium_manual = v:true
+let g:codeium_enabled = v:false
+
+inoremap <silent><nowait> <Esc>} <cmd>call codeium#CycleCompletions(1)<cr>
+inoremap <silent><nowait> <Esc>{ <cmd>call codeium#CycleCompletions(-1)<cr>
+imap <script><silent><nowait><expr> <Esc><cr> codeium#Accept()
