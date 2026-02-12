@@ -743,3 +743,29 @@ let g:vim_ai_chat = {
 \    "paste_mode": 1,
 \  },
 \}
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Custom Utilities
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:nbuf_name = ''
+
+" Creates a padding buffer for notes:
+function! Notes()
+  if !bufexists(g:nbuf_name)
+    let g:nbuf_name = tempname() . '_notes'
+    execute 'vertical topleft new ' . g:nbuf_name
+    setlocal nocursorline nocursorcolumn winfixwidth winfixheight winfixwidth winfixheight
+
+    let bufnr = winbufnr(0)
+  else
+    let bufnr = bufnr(g:nbuf_name)
+    execute 'vertical topleft sbuffer ' . bufnr
+  endif
+
+  execute winnr('#') . 'wincmd w'
+  exec 'vertical resize '. string(&columns * 0.80)
+endfunction
+
+" Map it to a key:
+nnoremap <leader>NN :call Notes()<cr>
