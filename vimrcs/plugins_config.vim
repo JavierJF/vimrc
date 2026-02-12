@@ -206,7 +206,7 @@ command! -nargs=1 -complete=custom,s:lightline_colorschemes LightlineColorscheme
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vimroom
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:goyo_width=130
+let g:goyo_width=200
 let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
 let g:goyo_linenr=1
