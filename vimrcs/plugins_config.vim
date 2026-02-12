@@ -554,7 +554,7 @@ let g:vista#renderer#enable_icon = 1
 
 " Executive used when opening vista sidebar without specifying it.
 " See all the avaliable executives via `:echo g:vista#executives`.
-" let g:vista_default_executive = 'vim_lsp'
+let g:vista_default_executive = 'vim_lsp'
 
 " Set the executive for some filetypes explicitly. Use the explicit executive
 " instead of the default one for these filetypes when using `:Vista` without
@@ -639,3 +639,107 @@ let g:codeium_enabled = v:false
 inoremap <silent><nowait> <Esc>} <cmd>call codeium#CycleCompletions(1)<cr>
 inoremap <silent><nowait> <Esc>{ <cmd>call codeium#CycleCompletions(-1)<cr>
 imap <script><silent><nowait><expr> <Esc><cr> codeium#Accept()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => AI - Generic
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" NOTES: ui.paste_mode
+" - if disabled code indentation will work but AI doesn't always respond with a code block
+"   therefore it could be messed up
+" - find out more in vim's help `:help paste`
+" options.max_tokens
+" - note that prompt + max_tokens must be less than model's token limit, see #42, #46
+"   unclear/undocumented what it exactly does, but it seems to resolve issues when the model
+"   hits token limit, which respond with `OpenAI: HTTPError 400`
+
+" :AI
+" - engine: complete | chat - see how to configure chat engine in the section below
+" - options: openai config (see https://platform.openai.com/docs/api-reference/completions)
+" - options.request_timeout: request timeout in seconds
+" - options.enable_auth: enable authorization using openai key
+" - options.selection_boundary: seleciton prompt wrapper (eliminates empty responses, see #20)
+" - ui.paste_mode: use paste mode (see more info in the Notes below)
+let g:vim_ai_complete = {
+\  "engine": "complete",
+\  "options": {
+\    "model": "models/gemini-2.5-flash",
+\    "endpoint_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent",
+\    "max_tokens": 1000,
+\    "temperature": 0.1,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "#####",
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+" :AIEdit
+" - engine: complete | chat - see how to configure chat engine in the section below
+" - options: openai config (see https://platform.openai.com/docs/api-reference/completions)
+" - options.request_timeout: request timeout in seconds
+" - options.enable_auth: enable authorization using openai key
+" - options.selection_boundary: seleciton prompt wrapper (eliminates empty responses, see #20)
+" - ui.paste_mode: use paste mode (see more info in the Notes below)
+let g:vim_ai_edit = {
+\  "engine": "complete",
+\  "options": {
+\    "model": "models/gemini-2.5-flash",
+\    "endpoint_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+\    "max_tokens": 1000,
+\    "temperature": 0.1,
+\    "request_timeout": 20,
+\    "enable_auth": 1,
+\    "selection_boundary": "#####",
+\  },
+\  "ui": {
+\    "paste_mode": 1,
+\  },
+\}
+
+" Init prompt with basic instructs for the model: context, minimal formatting, etc...
+"
+" Formatting-Failures: Counting seems heavy on the model.
+" ```
+"   * Breaks lines that are longer than 100 characters into several ones.
+" ```
+let s:initial_chat_prompt =<< trim END
+<!-- >>> user -->
+
+You are a systems engineer assistant. Enforce the following formatting rules in your responses:
+  1. For code blocks add syntax type after ``` and a line break.
+  2. Ensure the response is always properly formatted.
+  3. Make sure that no double spaces are found in your response.
+END
+
+" :AIChat
+" - options: openai config (see https://platform.openai.com/docs/api-reference/chat)
+" - options.initial_prompt: prompt prepended to every chat request (list of lines or string)
+" - options.request_timeout: request timeout in seconds
+" - options.enable_auth: enable authorization using openai key
+" - options.selection_boundary: seleciton prompt wrapper (eliminates empty responses, see #20)
+" - ui.populate_options: put [chat-options] to the chat header
+" - ui.open_chat_command: preset (preset_below, preset_tab, preset_right) or a custom command
+" - ui.scratch_buffer_keep_open: re-use scratch buffer within the vim session
+" - ui.paste_mode: use paste mode (see more info in the Notes below)
+let g:vim_ai_chat = {
+\  "options": {
+\    "model": "models/gemini-2.5-flash",
+\    "endpoint_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+\    "max_tokens": 0,
+\    "temperature": 0.1,
+\    "request_timeout": 60,
+\    "enable_auth": 1,
+\    "selection_boundary": "",
+\    "initial_prompt": s:initial_chat_prompt,
+\  },
+\  "ui": {
+\    "code_syntax_enabled": 1,
+\    "populate_options": 0,
+\    "open_chat_command": "preset_below",
+\    "scratch_buffer_keep_open": 1,
+\    "paste_mode": 1,
+\  },
+\}
