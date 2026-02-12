@@ -17,6 +17,9 @@ else
   endif
 endif
 
+syn clear htmlTag
+syn region htmlTag start=+<[^/]+ end=+>+ fold oneline contains=htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster
+
 if v:version < 600
   syntax clear
 elseif exists('b:current_syntax')
@@ -47,11 +50,11 @@ endif
 
 " additions to HTML groups
 if get(g:, 'vim_markdown_emphasis_multiline', 1)
-    let s:oneline = ''
+    let s:oneline = ' oneline'
 else
     let s:oneline = ' oneline'
 endif
-syn region mkdItalic matchgroup=mkdItalic start="\%(\*\|_\)"    end="\%(\*\|_\)"
+syn region mkdItalic matchgroup=mkdItalic start="\%[^\\]\(\*\|_\)" end="\%(\*\|_\)\s" oneline
 syn region mkdBold matchgroup=mkdBold start="\%(\*\*\|__\)"    end="\%(\*\*\|__\)"
 syn region mkdBoldItalic matchgroup=mkdBoldItalic start="\%(\*\*\*\|___\)"    end="\%(\*\*\*\|___\)"
 execute 'syn region htmlItalic matchgroup=mkdItalic start="\%(^\|\s\)\zs\*\ze[^\\\*\t ]\%(\%([^*]\|\\\*\|\n\)*[^\\\*\t ]\)\?\*\_W" end="[^\\\*\t ]\zs\*\ze\_W" keepend contains=@Spell' . s:oneline . s:concealends
