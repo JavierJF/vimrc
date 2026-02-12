@@ -501,37 +501,6 @@ augroup TestUICustomistaion
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => YouCompleteMe
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"  let g:ycm_language_server =
-"    \ [
-"    \   {
-"    \     'name': 'yaml',
-"    \     'cmdline': [ '/path/to/yaml/server/yaml-language-server', '--stdio' ],
-"    \     'filetypes': [ 'yaml' ]
-"    \   },
-"    \   {
-"    \     'name': 'rust',
-"    \     'cmdline': [ 'ra_lsp_server' ],
-"    \     'filetypes': [ 'rust' ],
-"    \     'project_root_files': [ 'Cargo.toml' ]
-"    \   },
-"    \   {
-"    \     'name':'clangd',
-"    \     'cmdline': [
-"    \         '/home/jj/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/10.0.0/clangd_10.0.0/bin/clangd',
-"    \         '-header-insertion=never',
-"    \         '-background-index',
-"    \         '--fallback-style=none'
-"    \     ],
-"    \     'filetypes': [ 'cpp' ]
-"    \   }
-"    \ ]
-"
-"  set omnifunc=syntaxcomplete#Complete
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VimInspector
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
